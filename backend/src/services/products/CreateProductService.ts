@@ -3,7 +3,7 @@ import prismaClient from "../../prisma";
 interface ProductRequest {
   name: string;
   description: string;
-  price: number;
+  price: string;
   banner: string;
   category_id: string;
 }
@@ -16,7 +16,17 @@ class CreateProductService {
     banner,
     category_id,
   }: ProductRequest) {
-    return { ok: true };
+    const product = await prismaClient.product.create({
+      data: {
+        name: name,
+        description: description,
+        price: price,
+        banner: banner,
+        category_id: category_id,
+      },
+    });
+
+    return product;
   }
 }
 
