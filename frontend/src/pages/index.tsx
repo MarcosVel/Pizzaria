@@ -19,8 +19,14 @@ export default function Home() {
             <Input placeholder="Digite seu e-mail" type="text" />
 
             <Input placeholder="Sua senha" type="password" />
-            <Button type="submit" loading={false}>Acessar</Button>
+            <Button type="submit" loading={false}>
+              Acessar
+            </Button>
           </form>
+
+          <span className={styles.register}>
+            Não possui uma conta? <a>Cadastre-se</a>
+          </span>
         </div>
       </div>
     </>

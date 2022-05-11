@@ -1,0 +1,39 @@
+.containerCenter {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 600px;
+  padding: 2rem 1.5rem;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+
+    & > button {
+      height: 40px;
+      font-size: 1.2rem;
+    }
+  }
+
+  .register {
+    margin-top: 2rem;
+    color: #c2c2c2;
+
+    & > a {
+      color: var(--white);
+      font-weight: bold;
+    }
+  }
+}
