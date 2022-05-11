@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import LogoImg from "../../public/logo.svg";
 import styles from "../../styles/home.module.scss";
+import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 
 export default function Home() {
@@ -15,15 +16,10 @@ export default function Home() {
 
         <div className={styles.login}>
           <form>
-            <Input 
-              placeholder="Digite seu e-mail"
-              type="text"
-            />
+            <Input placeholder="Digite seu e-mail" type="text" />
 
-            <Input 
-              placeholder="Sua senha"
-              type="password"
-            />
+            <Input placeholder="Sua senha" type="password" />
+            <Button type="submit" loading={false}>Acessar</Button>
           </form>
         </div>
       </div>
