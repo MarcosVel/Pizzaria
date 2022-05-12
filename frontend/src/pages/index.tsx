@@ -37,7 +37,7 @@ export default function Home() {
           <form onSubmit={handleLogin}>
             <Input
               placeholder="Digite seu e-mail"
-              type="text"
+              type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
             />
