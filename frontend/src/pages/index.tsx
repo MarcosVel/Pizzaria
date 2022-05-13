@@ -17,12 +17,19 @@ export default function Home() {
   async function handleLogin(event: FormEvent) {
     event.preventDefault();
 
+    if (email === "" || password === "") {
+      return alert("Preencha os dados");
+    }
+
+    setLoading(true);
+
     let data = {
       email,
       password,
     };
 
     await signIn(data);
+    setLoading(false);
   }
 
   return (
@@ -40,6 +47,7 @@ export default function Home() {
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
+              required
             />
 
             <Input
@@ -47,6 +55,7 @@ export default function Home() {
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
+              required
             />
             <Button type="submit" loading={loading}>
               Acessar
