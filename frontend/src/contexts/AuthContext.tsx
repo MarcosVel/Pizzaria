@@ -1,6 +1,6 @@
 import Router from "next/router";
-import { destroyCookie, setCookie } from "nookies";
-import { createContext, ReactNode, useState } from "react";
+import { destroyCookie, parseCookies, setCookie } from "nookies";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "../services/apiClient";
 
@@ -47,6 +47,24 @@ export function signOut() {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<UserProps>();
   const isAuthenticated = !!user;
+
+  useEffect(() => {
+    const { "@nextauth.token": token } = parseCookies();
+
+    if (token) {
+      api
+        .get("/user")
+        .then(response => {
+          const { id, name, email } = response.data;
+
+          setUser({ id, name, email });
+        })
+        .catch(() => {
+          toast.warning("Token expirado, faça login novamente!");
+          signOut();
+        });
+    }
+  }, []);
 
   async function signIn({ email, password }: SignInProps) {
     try {

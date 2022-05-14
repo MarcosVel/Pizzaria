@@ -8,6 +8,7 @@ import styles from "../../styles/home.module.scss";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { AuthContext } from "../contexts/AuthContext";
+import { canSSRGuest } from "../utils/canSSRGuest";
 
 export default function Home() {
   const { signIn } = useContext(AuthContext);
@@ -71,3 +72,9 @@ export default function Home() {
     </>
   );
 }
+
+export const getServerSideProps = canSSRGuest(async ctx => {
+  return {
+    props: {},
+  };
+});
