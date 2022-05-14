@@ -1,7 +1,9 @@
 import Head from "next/head";
 import { FormEvent, useState } from "react";
+import { toast } from "react-toastify";
 import { Header } from "../../components/Header";
 import { Input } from "../../components/ui/input";
+import { setupAPIClient } from "../../services/api";
 import styles from "./styles.module.scss";
 
 export default function Category() {
@@ -9,6 +11,18 @@ export default function Category() {
 
   async function handleRegister(e: FormEvent) {
     e.preventDefault();
+
+    if (category === "") {
+      return toast.info("Insira o nome da categoria");
+    }
+
+    const apiClient = setupAPIClient();
+    await apiClient.post("/category", {
+      name: category,
+    });
+
+    toast.success(`Categoria "${category}" criada com sucesso!`);
+    setCategory("");
   }
 
   return (
