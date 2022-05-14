@@ -1,6 +1,7 @@
 import Router from "next/router";
 import { destroyCookie, setCookie } from "nookies";
 import { createContext, ReactNode, useState } from "react";
+import { toast } from "react-toastify";
 import { api } from "../services/apiClient";
 
 type AuthContextData = {
@@ -69,6 +70,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // redirect user to dashboard
       Router.push("/dashboard");
     } catch (err) {
+      toast.error("Erro ao acessar");
       console.log("Erro ao fazer login", err.response.data);
     }
   }
@@ -81,8 +83,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         password,
       });
 
+      toast.success("Cadastrado com successo");
+
       Router.push("/");
     } catch (err) {
+      toast.error("Erro ao cadastrar");
       console.log("Erro ao cadastrar", err.response.data);
     }
   }

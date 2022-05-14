@@ -7,6 +7,7 @@ import LogoImg from "../../../public/logo.svg";
 import styles from "../../../styles/home.module.scss";
 import { FormEvent, useContext, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
+import { toast } from "react-toastify";
 
 export default function SignUp() {
   const { signUp } = useContext(AuthContext);
@@ -19,7 +20,7 @@ export default function SignUp() {
     e.preventDefault();
 
     if (name === "" || email === "" || password === "") {
-      return alert("Preencha todos os campos");
+      return toast.warning("Complete todos os campos");
     }
 
     setLoading(true);
