@@ -15,6 +15,7 @@
     display: flex;
     align-items: center;
     gap: 32px;
+    margin-left: 16px;
     
     & > a {
       color: var(--white);
@@ -27,6 +28,9 @@
     }
 
     & > button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       background-color: transparent;
       border: 0;
       transition: 0.3s;
