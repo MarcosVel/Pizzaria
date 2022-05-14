@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useContext, useState } from "react";
+import { toast } from "react-toastify";
 import LogoImg from "../../public/logo.svg";
 import styles from "../../styles/home.module.scss";
 import { Button } from "../components/ui/button";
@@ -18,7 +19,7 @@ export default function Home() {
     event.preventDefault();
 
     if (email === "" || password === "") {
-      return alert("Preencha os dados");
+      return toast.warning("Complete todos os campos");
     }
 
     setLoading(true);
