@@ -71,3 +71,46 @@
     }
   }
 }
+
+.labelImg {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background-color: var(--dark-900);
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--gray-100);
+  cursor: pointer;
+
+  &:hover {
+    & > svg {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+  & > input {
+    display: none;
+  }
+
+  & > svg {
+    position: absolute;
+    z-index: 999;
+    opacity: 0.7;
+    transition: all 0.5s;
+  }
+
+  & span {
+    position: unset !important;
+  }
+}
+
+.preview {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 0.5rem !important;
+  object-fit: cover;
+}
