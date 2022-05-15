@@ -4,12 +4,24 @@ import { ChangeEvent, useState } from "react";
 import { FiUpload } from "react-icons/fi";
 import { Header } from "../../components/Header";
 import { Input } from "../../components/ui/input";
+import { setupAPIClient } from "../../services/api";
 import { canSSRAuth } from "../../utils/canSSRAuth";
 import styles from "./styles.module.scss";
 
-export default function Product() {
+type ItemProps = {
+  id: string;
+  name: string;
+};
+
+interface CategoryProps {
+  categoryList: ItemProps[];
+}
+
+export default function Product({ categoryList }: CategoryProps) {
   const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState(null);
+  const [categories, setCategories] = useState(categoryList || []);
+  const [categorySelected, setCategorySelected] = useState(0);
 
   function handleFile(e: ChangeEvent<HTMLInputElement>) {
     console.log(e.target.files);
@@ -28,6 +40,11 @@ export default function Product() {
       setImageFile(image);
       setImageUrl(URL.createObjectURL(e.target.files[0]));
     }
+  }
+
+  function handleCategorySelected(e) {
+    // console.log("Selecionado: ", categories[e.target.value]);
+    setCategorySelected(e.target.value);
   }
 
   return (
@@ -60,9 +77,12 @@ export default function Product() {
             )}
           </label>
 
-          <select>
-            <option>Bebidas</option>
-            <option>Pizzas</option>
+          <select value={categorySelected} onChange={handleCategorySelected}>
+            {categories.map((item, index) => (
+              <option key={item.id} value={index}>
+                {item.name}
+              </option>
+            ))}
           </select>
 
           <div className={styles.inputs}>
@@ -84,7 +104,13 @@ export default function Product() {
 }
 
 export const getServerSideProps = canSSRAuth(async ctx => {
+  const apiClient = setupAPIClient(ctx);
+
+  const response = await apiClient.get("/category");
+
   return {
-    props: {},
+    props: {
+      categoryList: response.data,
+    },
   };
 });
