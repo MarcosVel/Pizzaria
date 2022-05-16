@@ -17,7 +17,7 @@ export function Header() {
 
         <nav>
           <Link href="/category">Categoria</Link>
-          <Link href="/menu">Cardápio</Link>
+          <Link href="/product">Cardápio</Link>
           <button onClick={signOut}>
             <FiLogOut color="#fff" size={24} />
           </button>
