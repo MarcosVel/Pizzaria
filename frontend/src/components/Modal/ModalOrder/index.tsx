@@ -18,36 +18,42 @@ export function ModalOrder({ isOpen, onRequestClose, order }: ModalOrderProps) {
       right: "auto",
       padding: "30px",
       transform: "translate(-50%, -50%)",
-      backgroundColor: "#1d2d2e",
+      backgroundColor: "#1d1d2e",
+      width: "90%",
+      maxWidth: "650px",
+      borderRadius: "10px",
     },
   };
 
   return (
     <Modal isOpen={isOpen} onRequestClose={onRequestClose} style={customStyles}>
-      <button
-        type="button"
-        onClick={onRequestClose}
-        className="react-modal-close"
-        style={{ background: "transparent", border: 0 }}
-      >
-        <FiX size={40} color="#f34748" />
-      </button>
-
       <div className={styles.container}>
-        <h2>Detalhes do pedido</h2>
+        <div className={styles.containerHeader}>
+          <h2>Detalhes do pedido</h2>
+          <button
+            type="button"
+            onClick={onRequestClose}
+            className="react-modal-close"
+            style={{ background: "transparent", border: 0 }}
+          >
+            <FiX size={40} color="#f34748" />
+          </button>
+        </div>
         <span className={styles.table}>
           Mesa: <strong>{order[0].order.table}</strong>
         </span>
         {order.map(item => (
           <section key={item.id} className={styles.containerItem}>
-            <span>
-              {item.amount} - <strong>{item.product.name}</strong>
-            </span>
+            <strong>
+              {item.amount} - {item.product.name}
+            </strong>
             <span className={styles.description}>
               {item.product.description}
             </span>
           </section>
         ))}
+
+        <button className={styles.btnOrder}>Concluir pedido</button>
       </div>
     </Modal>
   );
