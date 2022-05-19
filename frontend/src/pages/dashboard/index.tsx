@@ -75,6 +75,12 @@ export default function Dashboard({ orders }: HomeProps) {
     setModalVisible(false);
   }
 
+  async function handleRefreshOrders() {
+    const apiClient = setupAPIClient();
+    const response = await apiClient.get("/orders");
+    setOrderList(response.data);
+  }
+
   Modal.setAppElement("#__next");
 
   return (
@@ -87,7 +93,7 @@ export default function Dashboard({ orders }: HomeProps) {
       <main className={styles.container}>
         <div className={styles.header}>
           <h1>Últimos pedidos</h1>
-          <button>
+          <button onClick={handleRefreshOrders}>
             <FiRefreshCcw size={25} />
           </button>
         </div>
