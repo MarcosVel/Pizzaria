@@ -29,6 +29,11 @@
   margin: 1rem 0;
 }
 
+.emptyList {
+  color: var(--gray-100);
+  margin-top: 0.2rem;
+}
+
 .orderItem {
   display: flex;
   align-items: center;

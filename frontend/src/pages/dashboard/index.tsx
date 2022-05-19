@@ -61,6 +61,20 @@ export default function Dashboard({ orders }: HomeProps) {
     setModalVisible(true);
   }
 
+  async function handleFinishModal(id: string) {
+    const apiClient = setupAPIClient();
+
+    await apiClient.put("/order/finish", {
+      order_id: id,
+    });
+
+    // get list again to reload
+    const response = await apiClient.get("/orders");
+    setOrderList(response.data);
+
+    setModalVisible(false);
+  }
+
   Modal.setAppElement("#__next");
 
   return (
@@ -79,6 +93,10 @@ export default function Dashboard({ orders }: HomeProps) {
         </div>
 
         <article className={styles.listOrders}>
+          {orderList.length === 0 && (
+            <span className={styles.emptyList}>Nenhum pedido em aberto!</span>
+          )}
+
           {orderList.map(item => (
             <button
               key={item.id}
@@ -97,6 +115,7 @@ export default function Dashboard({ orders }: HomeProps) {
           isOpen={modalVisible}
           onRequestClose={handleCloseModal}
           order={modalItem}
+          handleFinishOrder={handleFinishModal}
         />
       )}
     </>
