@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, ReactNode, useState } from "react";
 import { api } from "../services/api";
 
@@ -45,6 +46,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
 
       const { id, name, token } = response.data;
+
+      const data = {
+        ...response.data,
+      };
+
+      await AsyncStorage.setItem("@sujeitopizza", JSON.stringify(data));
+
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       setUser({ id, name, email, token });
 
