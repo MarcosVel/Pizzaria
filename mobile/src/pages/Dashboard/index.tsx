@@ -1,14 +1,31 @@
-import { useContext } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { AuthContext } from "../../contexts/AuthContext";
+import {
+  Keyboard,
+  SafeAreaView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { theme } from "../../styles/theme";
+import styles from "./styles";
 
 export default function Dashboard() {
-  const { logOut } = useContext(AuthContext);
   return (
-    <View>
-      <TouchableOpacity onPress={logOut}>
-        <Text>LogOut</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.title}>Novo pedido</Text>
+
+        <TextInput
+          placeholder="Número da mesa"
+          placeholderTextColor={theme.colors.placeholder}
+          style={styles.input}
+          keyboardType="number-pad"
+        />
+
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Abrir mesa</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }

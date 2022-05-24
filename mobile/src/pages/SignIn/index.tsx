@@ -4,6 +4,7 @@ import {
   Alert,
   Image,
   Keyboard,
+  SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -31,7 +32,7 @@ export default function SignIn() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Image style={styles.logo} source={require("../../assets/logo.png")} />
         <View style={styles.inputContainer}>
           <TextInput
@@ -57,7 +58,7 @@ export default function SignIn() {
             )}
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 }
