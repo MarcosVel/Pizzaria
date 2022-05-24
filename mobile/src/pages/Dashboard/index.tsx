@@ -1,9 +1,14 @@
-import { Text, View } from "react-native";
+import { useContext } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { AuthContext } from "../../contexts/AuthContext";
 
 export default function Dashboard() {
+  const { logOut } = useContext(AuthContext);
   return (
     <View>
-      <Text>Dash</Text>
+      <TouchableOpacity onPress={logOut}>
+        <Text>LogOut</Text>
+      </TouchableOpacity>
     </View>
-  )
+  );
 }
