@@ -7,6 +7,7 @@ type AuthContextData = {
   isAuthenticated: boolean;
   signIn: (credentials: SignInProps) => Promise<void>;
   loadingAuth: boolean;
+  loading: boolean;
   logOut: () => Promise<void>;
 };
 
@@ -35,7 +36,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     email: "",
     token: "",
   });
-  const [loadingAuth, setLoadingAuth] = useState(true);
+  const [loadingAuth, setLoadingAuth] = useState(false);
+  const [loading, setLoading] = useState(true);
   const isAuthenticated = !!user.name;
 
   useEffect(() => {
@@ -57,13 +59,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
         });
       }
 
-      setLoadingAuth(false);
+      setLoading(false);
     }
 
     getUser();
   }, []);
 
   async function signIn({ email, password }: SignInProps) {
+    setLoadingAuth(true);
+
     try {
       const response = await api.post("/session", {
         email,
@@ -107,6 +111,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         isAuthenticated,
         signIn,
         loadingAuth,
+        loading,
         logOut,
       }}
     >
