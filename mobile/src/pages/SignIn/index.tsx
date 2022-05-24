@@ -1,26 +1,32 @@
-import { useState } from "react";
-import { Alert, Text } from "react-native";
+import { useContext, useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   Keyboard,
+  Text,
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { AuthContext } from "../../contexts/AuthContext";
 import { theme } from "../../styles/theme";
 import styles from "./styles";
 
 export default function SignIn() {
+  const { signIn, loadingAuth } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleLogin() {
+  async function handleLogin() {
     if (email === "" || password === "") {
       return Alert.alert("Campos inválidos", "Preencha os campos vazios", [
         { text: "Entendido" },
       ]);
     }
+
+    await signIn({ email, password });
   }
 
   return (
@@ -44,7 +50,11 @@ export default function SignIn() {
             onChangeText={setPassword}
           />
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Acessar</Text>
+            {loadingAuth ? (
+              <ActivityIndicator size={25} color={theme.colors.dark900} />
+            ) : (
+              <Text style={styles.buttonText}>Acessar</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
