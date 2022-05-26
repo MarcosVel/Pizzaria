@@ -47,4 +47,33 @@ export default StyleSheet.create({
     color: theme.colors.white,
     marginBottom: 0,
   },
+  actions: {
+    flexDirection: "row",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  button: {
+    height: 45,
+    backgroundColor: theme.colors.green900,
+    borderRadius: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "30%",
+  },
+  buttonAdd: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#3fd1ff",
+    marginLeft: 24,
+    height: 45,
+    borderRadius: 4,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    lineHeight: 22,
+    color: theme.colors.dark900,
+  },
 });

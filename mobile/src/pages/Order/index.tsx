@@ -54,6 +54,15 @@ export default function Order() {
             keyboardType="numeric"
           />
         </View>
+
+        <View style={styles.actions}>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Avançar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonAdd}>
+            <Feather name="plus" size={28} color={theme.colors.white} />
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
