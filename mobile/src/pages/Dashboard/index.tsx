@@ -8,14 +8,16 @@ import {
   TextInput,
   ToastAndroid,
   TouchableOpacity,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
 } from "react-native";
 import { StackParamsList } from "../../routes/app.routes";
+import { api } from "../../services/api";
 import { theme } from "../../styles/theme";
 import styles from "./styles";
 
 export default function Dashboard() {
-  const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<StackParamsList>>();
   const [number, setNumber] = useState("");
 
   async function openOrder() {
@@ -23,10 +25,16 @@ export default function Dashboard() {
       return ToastAndroid.show("Insira o número da mesa", ToastAndroid.SHORT);
     }
 
+    const response = await api.post("/order", {
+      table: Number(number),
+    });
+
     navigation.navigate("Order", {
       number: number,
-      order_id: '2fded6aa-2bae-412b-b54b-9cd107ca5166'
+      order_id: response.data.id,
     });
+
+    setNumber("");
   }
 
   return (
