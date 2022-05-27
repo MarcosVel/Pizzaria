@@ -1,14 +1,16 @@
 import { Feather } from "@expo/vector-icons";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import {
   Keyboard,
   SafeAreaView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { api } from "../../services/api";
 import { theme } from "../../styles/theme";
 import styles from "./styles";
 
@@ -23,13 +25,29 @@ type OrderRouteProps = RouteProp<RouteDetailParams, "Order">;
 
 export default function Order() {
   const route = useRoute<OrderRouteProps>();
+  const navigation = useNavigation();
+
+  async function handleCloseOrder() {
+    try {
+      await api.delete(`/order?order_id=${route.params?.order_id}`);
+
+      ToastAndroid.show(
+        `Mesa ${route.params?.number} deletada`,
+        ToastAndroid.SHORT
+      );
+
+      navigation.goBack();
+    } catch (err) {
+      console.log("erro: ", err);
+    }
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Mesa: {route.params.number}</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleCloseOrder}>
             <Feather name="trash-2" size={28} color={theme.colors.red900} />
           </TouchableOpacity>
         </View>
