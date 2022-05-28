@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import {
   Keyboard,
   SafeAreaView,
@@ -21,11 +22,30 @@ type RouteDetailParams = {
   };
 };
 
+type CategoryProps = {
+  id: string;
+  name: string;
+};
+
 type OrderRouteProps = RouteProp<RouteDetailParams, "Order">;
 
 export default function Order() {
   const route = useRoute<OrderRouteProps>();
   const navigation = useNavigation();
+  const [categories, setCategories] = useState<CategoryProps[] | []>([]);
+  const [categorySelected, setCategorySelected] = useState<CategoryProps>();
+  const [amount, setAmount] = useState("1");
+
+  useEffect(() => {
+    async function loadInfo() {
+      const response = await api.get("/category");
+
+      setCategories(response.data);
+      setCategorySelected(response.data[0]);
+    }
+
+    loadInfo();
+  }, []);
 
   async function handleCloseOrder() {
     try {
@@ -52,11 +72,14 @@ export default function Order() {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.select}>
-          <Text style={{ fontSize: 17, color: theme.colors.white }}>
-            Pizzas
-          </Text>
-        </TouchableOpacity>
+        {categories.length !== 0 && (
+          <TouchableOpacity style={styles.select}>
+            <Text style={{ fontSize: 17, color: theme.colors.white }}>
+              {categorySelected?.name}
+            </Text>
+          </TouchableOpacity>
+        )}
+
         <TouchableOpacity style={styles.select}>
           <Text style={{ fontSize: 17, color: theme.colors.white }}>
             Pizza de calabreza
@@ -70,6 +93,8 @@ export default function Order() {
             placeholder="0"
             placeholderTextColor={theme.colors.placeholder}
             keyboardType="numeric"
+            value={amount}
+            onChangeText={setAmount}
           />
         </View>
 
