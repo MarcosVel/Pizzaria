@@ -3,6 +3,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import {
   Keyboard,
+  Modal,
   SafeAreaView,
   Text,
   TextInput,
@@ -11,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { ModalPicker } from "../../components/ModalPicker";
 import { api } from "../../services/api";
 import { theme } from "../../styles/theme";
 import styles from "./styles";
@@ -22,7 +24,7 @@ type RouteDetailParams = {
   };
 };
 
-type CategoryProps = {
+export type CategoryProps = {
   id: string;
   name: string;
 };
@@ -35,6 +37,7 @@ export default function Order() {
   const [categories, setCategories] = useState<CategoryProps[] | []>([]);
   const [categorySelected, setCategorySelected] = useState<CategoryProps>();
   const [amount, setAmount] = useState("1");
+  const [modalCategoryOpen, setModalCategoryOpen] = useState(false);
 
   useEffect(() => {
     async function loadInfo() {
@@ -46,6 +49,10 @@ export default function Order() {
 
     loadInfo();
   }, []);
+
+  function handleChangeCategory(item: CategoryProps) {
+    setCategorySelected(item);
+  }
 
   async function handleCloseOrder() {
     try {
@@ -73,7 +80,10 @@ export default function Order() {
         </View>
 
         {categories.length !== 0 && (
-          <TouchableOpacity style={styles.select}>
+          <TouchableOpacity
+            style={styles.select}
+            onPress={() => setModalCategoryOpen(true)}
+          >
             <Text style={{ fontSize: 17, color: theme.colors.white }}>
               {categorySelected?.name}
             </Text>
@@ -106,6 +116,14 @@ export default function Order() {
             <Feather name="plus" size={28} color={theme.colors.white} />
           </TouchableOpacity>
         </View>
+
+        <Modal transparent visible={modalCategoryOpen} animationType="fade">
+          <ModalPicker
+            handleCloseModal={() => setModalCategoryOpen(false)}
+            options={categories}
+            selectedItem={handleChangeCategory}
+          />
+        </Modal>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
