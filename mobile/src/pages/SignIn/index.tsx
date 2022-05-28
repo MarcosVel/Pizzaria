@@ -40,6 +40,8 @@ export default function SignIn() {
             placeholder="Digite seu e-mail"
             placeholderTextColor={theme.colors.placeholder}
             value={email}
+            textContentType="emailAddress"
+            autoCapitalize="none"
             onChangeText={setEmail}
           />
           <TextInput
