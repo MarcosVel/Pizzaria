@@ -1,7 +1,9 @@
 import { Feather } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import {
   Keyboard,
+  Modal,
   SafeAreaView,
   Text,
   TextInput,
@@ -10,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { ModalPicker } from "../../components/ModalPicker";
 import { api } from "../../services/api";
 import { theme } from "../../styles/theme";
 import styles from "./styles";
@@ -21,11 +24,35 @@ type RouteDetailParams = {
   };
 };
 
+export type CategoryProps = {
+  id: string;
+  name: string;
+};
+
 type OrderRouteProps = RouteProp<RouteDetailParams, "Order">;
 
 export default function Order() {
   const route = useRoute<OrderRouteProps>();
   const navigation = useNavigation();
+  const [categories, setCategories] = useState<CategoryProps[] | []>([]);
+  const [categorySelected, setCategorySelected] = useState<CategoryProps>();
+  const [amount, setAmount] = useState("1");
+  const [modalCategoryOpen, setModalCategoryOpen] = useState(false);
+
+  useEffect(() => {
+    async function loadInfo() {
+      const response = await api.get("/category");
+
+      setCategories(response.data);
+      setCategorySelected(response.data[0]);
+    }
+
+    loadInfo();
+  }, []);
+
+  function handleChangeCategory(item: CategoryProps) {
+    setCategorySelected(item);
+  }
 
   async function handleCloseOrder() {
     try {
@@ -52,11 +79,17 @@ export default function Order() {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.select}>
-          <Text style={{ fontSize: 17, color: theme.colors.white }}>
-            Pizzas
-          </Text>
-        </TouchableOpacity>
+        {categories.length !== 0 && (
+          <TouchableOpacity
+            style={styles.select}
+            onPress={() => setModalCategoryOpen(true)}
+          >
+            <Text style={{ fontSize: 17, color: theme.colors.white }}>
+              {categorySelected?.name}
+            </Text>
+          </TouchableOpacity>
+        )}
+
         <TouchableOpacity style={styles.select}>
           <Text style={{ fontSize: 17, color: theme.colors.white }}>
             Pizza de calabreza
@@ -70,6 +103,8 @@ export default function Order() {
             placeholder="0"
             placeholderTextColor={theme.colors.placeholder}
             keyboardType="numeric"
+            value={amount}
+            onChangeText={setAmount}
           />
         </View>
 
@@ -81,6 +116,14 @@ export default function Order() {
             <Feather name="plus" size={28} color={theme.colors.white} />
           </TouchableOpacity>
         </View>
+
+        <Modal transparent visible={modalCategoryOpen} animationType="fade">
+          <ModalPicker
+            handleCloseModal={() => setModalCategoryOpen(false)}
+            options={categories}
+            selectedItem={handleChangeCategory}
+          />
+        </Modal>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
