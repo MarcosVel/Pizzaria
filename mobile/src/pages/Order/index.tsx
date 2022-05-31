@@ -29,6 +29,11 @@ export type CategoryProps = {
   name: string;
 };
 
+type ProductProps = {
+  id: string;
+  name: string;
+};
+
 type OrderRouteProps = RouteProp<RouteDetailParams, "Order">;
 
 export default function Order() {
@@ -38,6 +43,9 @@ export default function Order() {
   const [categorySelected, setCategorySelected] = useState<CategoryProps>();
   const [amount, setAmount] = useState("1");
   const [modalCategoryOpen, setModalCategoryOpen] = useState(false);
+  const [products, setProducts] = useState<ProductProps[] | []>([]);
+  const [productSelected, setProductSelected] = useState<ProductProps>();
+  const [modalProductVisible, setModalProductVisible] = useState(false);
 
   useEffect(() => {
     async function loadInfo() {
@@ -50,8 +58,25 @@ export default function Order() {
     loadInfo();
   }, []);
 
+  useEffect(() => {
+    async function loadProducts() {
+      const response = await api.get(
+        `/category/product?category_id=${categorySelected?.id}`
+      );
+
+      setProducts(response.data);
+      setProductSelected(response.data[0]);
+    }
+
+    loadProducts();
+  }, [categorySelected]);
+
   function handleChangeCategory(item: CategoryProps) {
     setCategorySelected(item);
+  }
+
+  function handleChangeProduct(item: ProductProps) {
+    setProductSelected(item);
   }
 
   async function handleCloseOrder() {
@@ -90,11 +115,16 @@ export default function Order() {
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity style={styles.select}>
-          <Text style={{ fontSize: 17, color: theme.colors.white }}>
-            Pizza de calabreza
-          </Text>
-        </TouchableOpacity>
+        {products.length !== 0 && (
+          <TouchableOpacity
+            style={styles.select}
+            onPress={() => setModalProductVisible(true)}
+          >
+            <Text style={{ fontSize: 17, color: theme.colors.white }}>
+              {productSelected?.name}
+            </Text>
+          </TouchableOpacity>
+        )}
 
         <View style={styles.wtdContainer}>
           <Text style={styles.qtdText}>Quantidade</Text>
@@ -122,6 +152,14 @@ export default function Order() {
             handleCloseModal={() => setModalCategoryOpen(false)}
             options={categories}
             selectedItem={handleChangeCategory}
+          />
+        </Modal>
+
+        <Modal transparent visible={modalProductVisible} animationType="fade">
+          <ModalPicker
+            handleCloseModal={() => setModalProductVisible(false)}
+            options={products}
+            selectedItem={handleChangeProduct}
           />
         </Modal>
       </SafeAreaView>
