@@ -75,6 +75,10 @@ export default function Order() {
     setCategorySelected(item);
   }
 
+  function handleChangeProduct(item: ProductProps) {
+    setProductSelected(item);
+  }
+
   async function handleCloseOrder() {
     try {
       await api.delete(`/order?order_id=${route.params?.order_id}`);
@@ -112,7 +116,10 @@ export default function Order() {
         )}
 
         {products.length !== 0 && (
-          <TouchableOpacity style={styles.select}>
+          <TouchableOpacity
+            style={styles.select}
+            onPress={() => setModalProductVisible(true)}
+          >
             <Text style={{ fontSize: 17, color: theme.colors.white }}>
               {productSelected?.name}
             </Text>
@@ -145,6 +152,14 @@ export default function Order() {
             handleCloseModal={() => setModalCategoryOpen(false)}
             options={categories}
             selectedItem={handleChangeCategory}
+          />
+        </Modal>
+
+        <Modal transparent visible={modalProductVisible} animationType="fade">
+          <ModalPicker
+            handleCloseModal={() => setModalProductVisible(false)}
+            options={products}
+            selectedItem={handleChangeProduct}
           />
         </Modal>
       </SafeAreaView>
