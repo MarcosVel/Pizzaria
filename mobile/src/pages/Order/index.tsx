@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import {
+  FlatList,
   Keyboard,
   Modal,
   SafeAreaView,
@@ -13,6 +14,7 @@ import {
   View,
 } from "react-native";
 import { ModalPicker } from "../../components/ModalPicker";
+import ListItem from "../../components/ListItem";
 import { api } from "../../services/api";
 import { theme } from "../../styles/theme";
 import styles from "./styles";
@@ -34,6 +36,13 @@ type ProductProps = {
   name: string;
 };
 
+type ItemProps = {
+  id: string;
+  product_id: string;
+  name: string;
+  amount: string | number;
+};
+
 type OrderRouteProps = RouteProp<RouteDetailParams, "Order">;
 
 export default function Order() {
@@ -46,6 +55,7 @@ export default function Order() {
   const [products, setProducts] = useState<ProductProps[] | []>([]);
   const [productSelected, setProductSelected] = useState<ProductProps>();
   const [modalProductVisible, setModalProductVisible] = useState(false);
+  const [items, setItems] = useState<ItemProps[]>([]);
 
   useEffect(() => {
     async function loadInfo() {
@@ -79,18 +89,58 @@ export default function Order() {
     setProductSelected(item);
   }
 
-  async function handleCloseOrder() {
-    try {
-      await api.delete(`/order?order_id=${route.params?.order_id}`);
+  async function handleAddItem() {
+    const response = await api.post("/order/add", {
+      order_id: route.params.order_id,
+      product_id: productSelected?.id,
+      amount: Number(amount),
+    });
 
-      ToastAndroid.show(
-        `Mesa ${route.params?.number} deletada`,
+    let data = {
+      id: response.data.id,
+      product_id: productSelected?.id as string,
+      name: productSelected?.name as string,
+      amount: amount,
+    };
+
+    setItems(oldArray => [...oldArray, data]);
+  }
+
+  async function handleDeleteItem(item_id: string, item_name: string) {
+    await api.delete("/order/remove", {
+      params: {
+        item_id: item_id,
+      },
+    });
+
+    let removeItem = items.filter(item => {
+      return item.id !== item_id;
+    });
+
+    ToastAndroid.show(`Item removido: ${item_name}`, ToastAndroid.SHORT);
+
+    setItems(removeItem);
+  }
+
+  async function handleCloseOrder() {
+    if (items.length !== 0) {
+      return ToastAndroid.show(
+        "A mesa possui itens em aberto",
         ToastAndroid.SHORT
       );
+    } else {
+      try {
+        await api.delete(`/order?order_id=${route.params?.order_id}`);
 
-      navigation.goBack();
-    } catch (err) {
-      console.log("erro: ", err);
+        ToastAndroid.show(
+          `Mesa ${route.params?.number} deletada`,
+          ToastAndroid.SHORT
+        );
+
+        navigation.goBack();
+      } catch (err) {
+        console.log("erro: ", err);
+      }
     }
   }
 
@@ -139,13 +189,33 @@ export default function Order() {
         </View>
 
         <View style={styles.actions}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={[styles.button, { opacity: items.length === 0 ? 0.3 : 1 }]}
+            disabled={items.length === 0}
+          >
             <Text style={styles.buttonText}>Avançar</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonAdd}>
+          <TouchableOpacity
+            style={[
+              styles.buttonAdd,
+              { opacity: products.length === 0 ? 0.3 : 1 },
+            ]}
+            disabled={products.length === 0}
+            onPress={handleAddItem}
+          >
             <Feather name="plus" size={28} color={theme.colors.white} />
           </TouchableOpacity>
         </View>
+
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          style={{ flex: 1, marginTop: 24 }}
+          data={items}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <ListItem data={item} deleteItem={handleDeleteItem} />
+          )}
+        />
 
         <Modal transparent visible={modalCategoryOpen} animationType="fade">
           <ModalPicker
