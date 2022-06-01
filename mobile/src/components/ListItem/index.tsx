@@ -11,15 +11,20 @@ export type ItemProps = {
     name: string;
     amount: string | number;
   };
+  deleteItem: (item_id: string, item_name: string) => void;
 };
 
-export default function ListItem({ data }: ItemProps) {
+export default function ListItem({ data, deleteItem }: ItemProps) {
+  function handleDeleteItem() {
+    deleteItem(data.id, data.name);
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.item}>
         {data?.amount} - {data?.name}
       </Text>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={handleDeleteItem}>
         <Feather name="trash-2" color={theme.colors.red900} size={25} />
       </TouchableOpacity>
     </View>

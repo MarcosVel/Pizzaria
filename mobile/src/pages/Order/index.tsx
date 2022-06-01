@@ -14,7 +14,7 @@ import {
   View,
 } from "react-native";
 import { ModalPicker } from "../../components/ModalPicker";
-import ListItem from "../../components/Order/ListItem";
+import ListItem from "../../components/ListItem";
 import { api } from "../../services/api";
 import { theme } from "../../styles/theme";
 import styles from "./styles";
@@ -106,18 +106,41 @@ export default function Order() {
     setItems(oldArray => [...oldArray, data]);
   }
 
-  async function handleCloseOrder() {
-    try {
-      await api.delete(`/order?order_id=${route.params?.order_id}`);
+  async function handleDeleteItem(item_id: string, item_name: string) {
+    await api.delete("/order/remove", {
+      params: {
+        item_id: item_id,
+      },
+    });
 
-      ToastAndroid.show(
-        `Mesa ${route.params?.number} deletada`,
+    let removeItem = items.filter(item => {
+      return item.id !== item_id;
+    });
+
+    ToastAndroid.show(`Item removido: ${item_name}`, ToastAndroid.SHORT);
+
+    setItems(removeItem);
+  }
+
+  async function handleCloseOrder() {
+    if (items.length !== 0) {
+      return ToastAndroid.show(
+        "A mesa possui itens em aberto",
         ToastAndroid.SHORT
       );
+    } else {
+      try {
+        await api.delete(`/order?order_id=${route.params?.order_id}`);
 
-      navigation.goBack();
-    } catch (err) {
-      console.log("erro: ", err);
+        ToastAndroid.show(
+          `Mesa ${route.params?.number} deletada`,
+          ToastAndroid.SHORT
+        );
+
+        navigation.goBack();
+      } catch (err) {
+        console.log("erro: ", err);
+      }
     }
   }
 
@@ -189,7 +212,9 @@ export default function Order() {
           style={{ flex: 1, marginTop: 24 }}
           data={items}
           keyExtractor={item => item.id}
-          renderItem={({ item }) => <ListItem data={item} />}
+          renderItem={({ item }) => (
+            <ListItem data={item} deleteItem={handleDeleteItem} />
+          )}
         />
 
         <Modal transparent visible={modalCategoryOpen} animationType="fade">
