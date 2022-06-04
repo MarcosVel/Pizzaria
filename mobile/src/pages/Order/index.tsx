@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useEffect, useState } from "react";
 import {
   FlatList,
@@ -13,8 +14,9 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { ModalPicker } from "../../components/ModalPicker";
 import ListItem from "../../components/ListItem";
+import { ModalPicker } from "../../components/ModalPicker";
+import { StackParamsList } from "../../routes/app.routes";
 import { api } from "../../services/api";
 import { theme } from "../../styles/theme";
 import styles from "./styles";
@@ -47,7 +49,8 @@ type OrderRouteProps = RouteProp<RouteDetailParams, "Order">;
 
 export default function Order() {
   const route = useRoute<OrderRouteProps>();
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<StackParamsList>>();
   const [categories, setCategories] = useState<CategoryProps[] | []>([]);
   const [categorySelected, setCategorySelected] = useState<CategoryProps>();
   const [amount, setAmount] = useState("1");
@@ -144,6 +147,13 @@ export default function Order() {
     }
   }
 
+  function handleFinishOrder() {
+    navigation.navigate("FinishOrder", {
+      number: route.params?.number,
+      order_id: route.params?.order_id,
+    });
+  }
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
@@ -192,6 +202,7 @@ export default function Order() {
           <TouchableOpacity
             style={[styles.button, { opacity: items.length === 0 ? 0.3 : 1 }]}
             disabled={items.length === 0}
+            onPress={handleFinishOrder}
           >
             <Text style={styles.buttonText}>Avançar</Text>
           </TouchableOpacity>
